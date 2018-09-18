@@ -86,7 +86,7 @@
         pack = completionHandlerPack;
         [additionCompletionHandlerExpectation fulfill];
     }];
-    [self waitForExpectationsWithTimeout:2 handler:nil];
+    [self waitForExpectationsWithTimeout:5 handler:nil];
 
     XCTAssertEqual([MGLOfflineStorage sharedOfflineStorage].packs.count, countOfPacks + 1, @"Added pack should have been added to the canonical collection of packs owned by the shared offline storage object. This assertion can fail if this test is run before -testAAALoadPacks.");
 
@@ -124,7 +124,7 @@
         return notificationPack == pack && pack.state == MGLOfflinePackStateInactive;
     }];
     [pack requestProgress];
-    [self waitForExpectationsWithTimeout:1 handler:nil];
+    [self waitForExpectationsWithTimeout:5 handler:nil];
 }
 
 - (void)testAddPackForGeometry {
@@ -157,7 +157,7 @@
         pack = completionHandlerPack;
         [additionCompletionHandlerExpectation fulfill];
     }];
-    [self waitForExpectationsWithTimeout:2 handler:nil];
+    [self waitForExpectationsWithTimeout:5 handler:nil];
     
     XCTAssertEqual([MGLOfflineStorage sharedOfflineStorage].packs.count, countOfPacks + 1, @"Added pack should have been added to the canonical collection of packs owned by the shared offline storage object. This assertion can fail if this test is run before -testAAALoadPacks.");
     
@@ -195,7 +195,7 @@
         return notificationPack == pack && pack.state == MGLOfflinePackStateInactive;
     }];
     [pack requestProgress];
-    [self waitForExpectationsWithTimeout:1 handler:nil];
+    [self waitForExpectationsWithTimeout:5 handler:nil];
     pack = nil;
 }
 
@@ -239,7 +239,7 @@
         XCTAssertEqual(pack.state, MGLOfflinePackStateInvalid, @"Removed pack should be invalid in the completion handler.");
         [completionHandlerExpectation fulfill];
     }];
-    [self waitForExpectationsWithTimeout:1 handler:nil];
+    [self waitForExpectationsWithTimeout:5 handler:nil];
 
     XCTAssertEqual(pack.state, MGLOfflinePackStateInvalid, @"Removed pack should have been invalidated synchronously.");
 
