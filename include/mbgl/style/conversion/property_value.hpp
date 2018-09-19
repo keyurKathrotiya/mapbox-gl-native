@@ -28,6 +28,13 @@ struct Converter<PropertyValue<T>> {
             ? PropertyValue<T>(PropertyExpression<T>(convertTokenStringToExpression(t)))
             : PropertyValue<T>(t);
     }
+    
+    PropertyValue<T> maybeConvertTokens(const expression::Formatted& t) const {
+        std::string todoText = t.sections[0].text;
+        return hasTokens(todoText)
+        ? PropertyValue<T>(PropertyExpression<T>(convertTokenStringToFormatExpression(todoText)))
+        : PropertyValue<T>(t);
+    }
 };
 
 } // namespace conversion

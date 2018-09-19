@@ -151,6 +151,13 @@ struct ToValue {
         Nan::EscapableHandleScope scope;
         return scope.Escape(Nan::Null());
     }
+    
+    v8::Local<v8::Value> operator()(const Formatted&) {
+        // TODO: think this through
+        assert(false);
+        Nan::EscapableHandleScope scope;
+        return scope.Escape(Nan::Null());
+    }
 
     v8::Local<v8::Value> operator()(const mbgl::Color& color) {
         return operator()(std::vector<Value> {

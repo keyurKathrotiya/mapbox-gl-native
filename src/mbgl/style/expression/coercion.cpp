@@ -82,6 +82,19 @@ EvaluationResult toColor(const Value& colorValue) {
     );
 }
 
+EvaluationResult toFormatted(const Value& formattedValue) {
+    return formattedValue.match(
+        [&](const std::string& formattedString) -> EvaluationResult {
+            return Formatted(formattedString.c_str());
+        },
+        [&](const auto&) -> EvaluationResult {
+            return EvaluationError{
+                "Could not parse formatted from value '" + stringify(formattedValue) + "'"
+            };
+        }
+    );
+}
+
 Coercion::Coercion(type::Type type_, std::vector<std::unique_ptr<Expression>> inputs_) :
     Expression(Kind::Coercion, std::move(type_)),
     inputs(std::move(inputs_))
@@ -96,6 +109,8 @@ Coercion::Coercion(type::Type type_, std::vector<std::unique_ptr<Expression>> in
         coerceSingleValue = toNumber;
     } else if (t.is<type::StringType>()) {
         coerceSingleValue = [] (const Value& v) -> EvaluationResult { return toString(v); };
+    } else if (t.is<type::FormattedType>()) {
+        coerceSingleValue = toFormatted;
     } else {
         assert(false);
     }
@@ -107,6 +122,7 @@ std::string Coercion::getOperator() const {
       [](const type::ColorType&) { return "to-color"; },
       [](const type::NumberType&) { return "to-number"; },
       [](const type::StringType&) { return "to-string"; },
+      [](const type::FormattedType&) { return "to-formatted"; },
       [](const auto&) { assert(false); return ""; });
 }
 
@@ -186,6 +202,3 @@ std::vector<optional<Value>> Coercion::possibleOutputs() const {
 } // namespace expression
 } // namespace style
 } // namespace mbgl
-
-
-

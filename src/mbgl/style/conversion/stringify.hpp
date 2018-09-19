@@ -2,6 +2,7 @@
 
 #include <mbgl/style/filter.hpp>
 #include <mbgl/style/property_value.hpp>
+#include <mbgl/style/expression/formatted.hpp>
 #include <mbgl/util/enum.hpp>
 #include <mbgl/util/color.hpp>
 #include <mbgl/util/feature.hpp>
@@ -128,6 +129,28 @@ template <class Writer>
 void stringify(Writer& writer, const Filter& filter) {
     if (!filter.expression) writer.Null();
     else stringify(writer, (*filter.expression)->serialize());
+}
+    
+    
+template <class Writer>
+void stringify(Writer& writer, const expression::Formatted& v) {
+    // TODO format: How is this used, what should it be?
+    writer.StartArray();
+    writer.String("format");
+    for (const auto& section : v.sections) {
+        writer.String(section.text);
+        writer.StartObject();
+        if (section.fontScale) {
+            writer.Key("font-scale");
+            stringify(writer, *section.fontScale);
+        }
+        if (section.fontStack) {
+            writer.Key("text-font");
+            stringify(writer, *section.fontStack);
+        }
+        writer.EndObject();
+    }
+    writer.EndArray();
 }
 
 template <class Writer>

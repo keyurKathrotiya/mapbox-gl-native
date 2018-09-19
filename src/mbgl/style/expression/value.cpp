@@ -1,6 +1,7 @@
 #include <rapidjson/writer.h>
 #include <rapidjson/stringbuffer.h>
 #include <mbgl/style/expression/value.hpp>
+#include <mbgl/style/conversion/stringify.hpp>
 
 namespace mbgl {
 namespace style {
@@ -13,6 +14,7 @@ type::Type typeOf(const Value& value) {
         [&](const std::string&) -> type::Type { return type::String; },
         [&](const Color&) -> type::Type { return type::Color; },
         [&](const Collator&) -> type::Type { return type::Collator; },
+        [&](const Formatted&) -> type::Type { return type::Formatted; },
         [&](const NullValue&) -> type::Type { return type::Null; },
         [&](const std::unordered_map<std::string, Value>&) -> type::Type { return type::Object; },
         [&](const std::vector<Value>& arr) -> type::Type {
@@ -57,6 +59,10 @@ void writeJSON(rapidjson::Writer<rapidjson::StringBuffer>& writer, const Value& 
             // Collators are excluded from constant folding and there's no Literal parser
             // for them so there shouldn't be any way to serialize this value.
             assert(false);
+        },
+        [&] (const Formatted& f) {
+            // TODO format: not sure where the stringify logic is supposed to live
+            mbgl::style::conversion::stringify(writer, f);
         },
         [&] (const std::vector<Value>& arr) {
             writer.StartArray();
@@ -134,6 +140,11 @@ mbgl::Value ValueConverter<mbgl::Value>::fromExpressionValue(const Value& value)
             // fromExpressionValue can't be used for Collator values,
             // because they have no meaningful representation as an mbgl::Value
             assert(false);
+            return mbgl::Value();
+        },
+        [&](const Formatted&)->mbgl::Value {
+            // TODO format: figure out right way to serialize this?
+            // Seems like it should be similar to the Formatted logic in stringify.hpp, can they be shared?
             return mbgl::Value();
         },
         [&](const std::vector<Value>& values)->mbgl::Value {
@@ -262,6 +273,7 @@ template <> type::Type valueTypeToExpressionType<double>() { return type::Number
 template <> type::Type valueTypeToExpressionType<std::string>() { return type::String; }
 template <> type::Type valueTypeToExpressionType<Color>() { return type::Color; }
 template <> type::Type valueTypeToExpressionType<Collator>() { return type::Collator; }
+template <> type::Type valueTypeToExpressionType<Formatted>() { return type::Formatted; }
 template <> type::Type valueTypeToExpressionType<std::unordered_map<std::string, Value>>() { return type::Object; }
 template <> type::Type valueTypeToExpressionType<std::vector<Value>>() { return type::Array(type::Value); }
 

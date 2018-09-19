@@ -559,6 +559,7 @@ global.valueTransformerArguments = function (property) {
         case 'number':
             return ['float', objCType];
         case 'formatted':
+            return ['mbgl::style::expression::Formatted', objCType];
         case 'string':
             return ['std::string', objCType];
         case 'enum':
@@ -593,6 +594,7 @@ global.mbglType = function(property) {
         case 'number':
             return 'float';
         case 'formatted':
+            return 'mbgl::style::expression::Formatted';
         case 'string':
             return 'std::string';
         case 'enum': {

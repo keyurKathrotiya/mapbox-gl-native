@@ -1096,7 +1096,7 @@
 
         NSExpression *constantExpression = [NSExpression expressionWithFormat:@"'Text Field'"];
         layer.text = constantExpression;
-        mbgl::style::PropertyValue<std::string> propertyValue = { "Text Field" };
+        mbgl::style::PropertyValue<mbgl::style::expression::Formatted> propertyValue = { "Text Field" };
         XCTAssertEqual(rawLayer->getTextField(), propertyValue,
                        @"Setting text to a constant value expression should update text-field.");
         XCTAssertEqualObjects(layer.text, constantExpression,
@@ -1108,7 +1108,7 @@
 
         {
             using namespace mbgl::style::expression::dsl;
-            propertyValue = mbgl::style::PropertyExpression<std::string>(
+            propertyValue = mbgl::style::PropertyExpression<mbgl::style::expression::Formatted>(
                 step(zoom(), literal("Text Field"), 18.0, literal("Text Field"))
             );
         }
@@ -1130,7 +1130,7 @@
 
         {
             using namespace mbgl::style::expression::dsl;
-            propertyValue = mbgl::style::PropertyExpression<std::string>(
+            propertyValue = mbgl::style::PropertyExpression<mbgl::style::expression::Formatted>(
                 toString(get(literal("token")))
             );
         }
