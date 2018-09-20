@@ -8,8 +8,7 @@ import android.support.test.espresso.IdlingResource;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
-
-import java.lang.reflect.Field;
+import com.mapbox.mapboxsdk.testapp.R;
 
 public class OnMapReadyIdlingResource implements IdlingResource, OnMapReadyCallback {
 
@@ -20,9 +19,8 @@ public class OnMapReadyIdlingResource implements IdlingResource, OnMapReadyCallb
   public OnMapReadyIdlingResource(Activity activity) {
     new Handler(activity.getMainLooper()).post(() -> {
       try {
-        Field field = activity.getClass().getDeclaredField("mapView");
-        field.setAccessible(true);
-        ((MapView) field.get(activity)).getMapAsync(OnMapReadyIdlingResource.this);
+        MapView mapView = (MapView) activity.findViewById(R.id.mapView);
+        mapView.getMapAsync(OnMapReadyIdlingResource.this);
       } catch (Exception err) {
         throw new RuntimeException(err);
       }
